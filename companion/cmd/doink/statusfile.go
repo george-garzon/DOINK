@@ -72,12 +72,12 @@ func writeStatusFile(path string, v statusFile) error {
 		return err
 	}
 	if _, err := tmp.Write(b); err != nil {
-		tmp.Close()
-		os.Remove(tmp.Name())
+		_ = tmp.Close()
+		_ = os.Remove(tmp.Name())
 		return err
 	}
 	if err := tmp.Close(); err != nil {
-		os.Remove(tmp.Name())
+		_ = os.Remove(tmp.Name())
 		return err
 	}
 	return os.Rename(tmp.Name(), path)
@@ -101,7 +101,7 @@ func runStatusFile(ctx context.Context, path string, s *status.Status, paths []s
 	for {
 		select {
 		case <-ctx.Done():
-			os.Remove(path) // a stale file would read as "running"
+			_ = os.Remove(path) // a stale file would read as "running"
 			return
 		case <-tick.C:
 		case <-poke:
